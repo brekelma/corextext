@@ -113,8 +113,8 @@ class CorexText:  #(Primitive):
      	#X_ = X[self.columns].values # useless if only desired columns are passed
         bow = self.bow.fit_transform(X.values.ravel())
     	factors = self.model.fit_transform(bow)
-        print 'array equal' if np.array_equal(self.model.labels, self.model.p_y_given_x) else 'NOT equal'
-        print 'alpha shape: ', self.model.alpha.shape, self.model.alpha[0,:], self.model.clusters
+        #print 'array equal' if np.array_equal(self.model.labels, self.model.p_y_given_x) else 'NOT equal'
+        #print 'alpha shape: ', self.model.alpha.shape, self.model.alpha[0,:], self.model.clusters
         return factors
 
     def annotation(self):
