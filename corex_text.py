@@ -87,32 +87,35 @@ class TFIDF: #(Primitive):
 
 class CorexText:  #(Primitive):
     
-    def __init__(self, n_hidden = None, **kwargs):
-        self.n_hidden = 10 if n_hidden is None else n_hidden #DEFAULT = 10 topics
+    def __init__(self, **kwargs):
+        
+        #self.n_hidden = 10 if n_hidden is None else n_hidden #DEFAULT = 10 topics
+        
         # no real need to pass extra Corex parameters.  Can be done if TFIDF primitive split
-        self.model = Corex(n_hidden= self.n_hidden)#, **kwargs)
+        #self.model = Corex(n_hidden= self.n_hidden)#, **kwargs)
 
         self.bow = TfidfVectorizer(decode_error='ignore', **kwargs)
         #if max_factors not None and n_hidden is None:
        # 	self.n_hidden = int(max_factors/len(self.columns))
         #else:
     	 
-    def fit(self, X): 
-        self.fit_transform(X)
+    def fit(self, A, k = 2): 
+        self.fit_transform(A, k)
         return self
 
-    def transform(self, X, y = None): # TAKES IN DF with index column
+    def predict(self, A, y = None): # TAKES IN DF with index column
         #self.columns = list(X)
     	#X_ = X[self.columns].values # useless if only desired columns are passed
-        bow = self.bow.transform(X.values.ravel())
+        bow = self.bow.transform(A.values.ravel())
         factors = self.model.transform(bow)
         return factors
 
-    def fit_transform(self, X, y = None): # TAKES IN DF with index column
+    def fit_transform(self, A, k = 2, y = None): # TAKES IN DF with index column
         #self.columns = list(X)
      	#X_ = X[self.columns].values # useless if only desired columns are passed
-        bow = self.bow.fit_transform(X.values.ravel())
-    	factors = self.model.fit_transform(bow)
+        bow = self.bow.fit_transform(A.values.ravel())
+    	self.model = Corex(n_hidden= k)
+        factors = self.model.fit_transform(bow)
         #print 'array equal' if np.array_equal(self.model.labels, self.model.p_y_given_x) else 'NOT equal'
         #print 'alpha shape: ', self.model.alpha.shape, self.model.alpha[0,:], self.model.clusters
         return factors

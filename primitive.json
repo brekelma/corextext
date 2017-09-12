@@ -1,5 +1,5 @@
-cd ..{
-  "id": "51b85834-3b92-33e3-a05e-dd48e543ad33",
+{
+  "id": "21a0087a-e6b0-3a0e-9a65-c115cc057303",
   "name": "dsbox.corextext.corex_text.corextext",
   "common_name": "DSBox Corex Text",
   "description": "Learns latent factors / topics which explain the most multivariate information in bag of words representations of documents. Returns learned topic scores for each document. Also supports hierarchical models and 'anchoring' to encourage topics to concentrate around desired words.",
@@ -7,7 +7,7 @@ cd ..{
     "python2.7"
   ],
   "library": "dsbox",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "source_code": "https://github.com/brekelma/corextext.git",
   "is_class": true,
   "attributes": [
