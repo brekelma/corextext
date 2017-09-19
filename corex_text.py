@@ -10,6 +10,18 @@ import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 import numpy as np
 
+sys.path.append('../')
+from primitive_interfaces.unsupervised_learning import UnsupervisedLearnerPrimitiveBase
+from typing import NamedTuple, Union, Optional, Sequence
+
+
+Input = pd.DataFrame
+Output = np.ndarray
+Params = NamedTuple('Params', [
+    ('latent_factors', np.ndarray),  # Coordinates of cluster centers.
+])
+
+
 class TFIDF: #(Primitive):
     def __init__(self, replace_df = True, raw_data_path = None, **kwargs):
     	'''TO DO:  Add functionality to analyze multiple columns together'''
@@ -85,40 +97,63 @@ class TFIDF: #(Primitive):
     	return ['tfidf'] # col + '_' + 'tfidf' in L2 execution
 
 
-class CorexText:  #(Primitive):
+class CorexText(UnsupervisedLearnerPrimitiveBase[Input, Output, Params]):  #(Primitive):
     
-    def __init__(self, **kwargs):
+    def __init__(self, n_hidden : int = 10, max_iter : int = 200, **kwargs) -> None:
+        super().__init__()
+
+        self.n_hidden = n_hidden #DEFAULT = 10 topics (no latent_pct equivalent)
         
-        #self.n_hidden = 10 if n_hidden is None else n_hidden #DEFAULT = 10 topics
-        
-        # no real need to pass extra Corex parameters.  Can be done if TFIDF primitive split
-        #self.model = Corex(n_hidden= self.n_hidden)#, **kwargs)
+        # no real need to pass extra Corex parameters.  kwargs used for TFIDF
+        self.model = Corex(n_hidden= self.n_hidden, max_iter = max_iter)#, **kwargs)
 
         self.bow = TfidfVectorizer(decode_error='ignore', **kwargs)
         #if max_factors not None and n_hidden is None:
-       # 	self.n_hidden = int(max_factors/len(self.columns))
+       #    self.n_hidden = int(max_factors/len(self.columns))
         #else:
-    	 
-    def fit(self, A, k = 2): 
-        self.fit_transform(A, k)
-        return self
-
-    def predict(self, A, y = None): # TAKES IN DF with index column
+         
+    def fit(self) -> None: #X : Sequence[Input]): 
         #self.columns = list(X)
-    	#X_ = X[self.columns].values # useless if only desired columns are passed
-        bow = self.bow.transform(A.values.ravel())
-        factors = self.model.transform(bow)
-        return factors
+        #X_ = X[self.columns].values # useless if only desired columns are passed
+        if self.fitted:
+            return
+        if not self.training_inputs:
+            raise ValueError("Missing training data.")
 
-    def fit_transform(self, A, k = 2, y = None): # TAKES IN DF with index column
-        #self.columns = list(X)
-     	#X_ = X[self.columns].values # useless if only desired columns are passed
-        bow = self.bow.fit_transform(A.values.ravel())
-    	self.model = Corex(n_hidden= k)
+        bow = self.bow.fit_transform(self.training_inputs.values.ravel())
         factors = self.model.fit_transform(bow)
-        #print 'array equal' if np.array_equal(self.model.labels, self.model.p_y_given_x) else 'NOT equal'
-        #print 'alpha shape: ', self.model.alpha.shape, self.model.alpha[0,:], self.model.clusters
+        self.fitted = True
+
+
+    def produce(self, X : Sequence[Input], y : Sequence[Input] = None) -> Sequence[Output]: # TAKES IN DF with index column
+        #self.columns = list(X)
+        #X_ = X[self.columns].values # useless if only desired columns are passed
+        if not self.fitted:
+            bow = self.bow.fit_transform(X.values.ravel())
+            factors = self.model.fit_transform(bow)
+            self.fitted = True
+        else:
+            bow = self.bow.transform(X.values.ravel())
+            factors = self.model.transform(bow)
+
         return factors
+
+    def fit_transform(self, X : Sequence[Input], y : Sequence[Input] = None) -> Sequence[Output]: # TAKES IN DF with index column
+        #self.columns = list(X)
+        #X_ = X[self.columns].values # useless if only desired columns are passed
+
+        bow = self.bow.fit_transform(X.values.ravel())
+        factors = self.model.fit_transform(bow)
+        self.fitted = True
+        return factors
+
+    def set_training_data(self, X : Sequence[Input]) -> None:
+        self.training_inputs = X
+        self.fitted = False
+
+    def get_params(self) -> Params:
+        return Params(latent_factors = self.model.labels)
+
 
     def annotation(self):
         if self._annotation is not None:
@@ -132,7 +167,7 @@ class CorexText:  #(Primitive):
         return self._annotation
 
     def get_feature_names(self):
-    	return ['CorexText_'+ str(i) for i in range(self.n_hidden)]
+        return ['CorexText_'+ str(i) for i in range(self.n_hidden)]
 
 
 
