@@ -1,28 +1,22 @@
 {
   "id": "483a8de3-801a-3bad-a665-2d8b5dca47f9",
-  "name": "dsbox.corextext.corex_text.corextext",
+  "name": "dsbox.corextext.corex_text.CorexText",
   "common_name": "DSBox Corex Text",
   "description": "Learns latent factors / topics which explain the most multivariate information in bag of words representations of documents. Returns learned topic scores for each document. Also supports hierarchical models and 'anchoring' to encourage topics to concentrate around desired words.",
   "languages": [
-    "python2.7", "python3.6"
+    "python2.7", "python3.5"
   ],
   "library": "dsbox",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "source_code": "https://github.com/brekelma/corextext.git",
   "is_class": true,
   "attributes": [
     {
       "shape": "n_documents, n_topics",
       "type": "array",
-      "name": "labels",
+      "name": "latent_factors",
       "description": "Topic activations for each document."
     }, 
-    {
-      "shape": "n_terms",
-      "type": "array",
-      "name": "clusters",
-      "description": "The topic to which each term belongs."
-    }
   ],
   "parameters": [
     {
@@ -59,7 +53,7 @@
   "methods_available": [
     {
       "name": "fit",
-      "id": "dsbox.corextext.corextext.CorexText.fit",
+      "id": "dsbox.corextext.corex_text.CorexText.fit",
       "description": "'Fit the model according to the given training data.\n",
       "returns": {
         "type": "object",
@@ -70,27 +64,27 @@
         {
           "shape": "n_documents, n_terms",
           "type": "array-like, sparse matrix",
-          "name": "X",
+          "name": "inputs",
           "description": "Training vector, where n_documents is the number of documents and n_terms is the vocabulary size.  Matrix entries should be preprocessed to bag of word counts or tfidf score.",
           "is_hyperparameter": false
         }
         ]
     },
     {
-      "name": "transform",
-      "id": "dsbox.linearcorex.Corex.transform",
+      "name": "produce",
+      "id": "dsbox.corextext.corex_text.CorexText.produce",
       "description": "'Transform data according to learned model.\n",
       "returns": {
         "type": "array-like",
         "shape": "n_documents, n_topics",
-        "name": "Y",
+        "name": "latent_factors",
         "description": "Returns topic activations for each document. '"
       },
       "parameters": [
         {
           "shape": "n_documents, n_terms",
           "type": "array-like, sparse matrix",
-          "name": "X",
+          "name": "inputs",
           "description": "Training vector, where n_documents is the number of documents and n_terms is the vocabulary size.  Matrix entries should be preprocessed to bag of word counts or tfidf score.",
           "is_hyperparameter": false
         }
