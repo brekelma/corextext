@@ -2,7 +2,7 @@ from sklearn import preprocessing
 #import primitive
 import sys
 #sys.path.append('corex_topic/')
-from corextext.corex_topic import Corex
+from corextext.corextext.corex_topic import Corex
 #import corex_topic.corex_topic as corex_text
 from collections import defaultdict
 from scipy import sparse
@@ -35,11 +35,10 @@ class TFIDF: #(Primitive):
 
 
     def fit(self, X, y = None):
-    	'''X = df[col] for single text column'''
-    	self.columns = list(X)
+        self.columns = list(X)
         if len(self.columns) > 1:
             self.columns = self.columns[0] if self.columns[0] != X.index.name else self.columns[1]
-            print 'WARNING: Only first column being analyzed', self.columns
+            print ('WARNING: Only first column being analyzed', self.columns)
             # TO DO: handle multiple? naming in transform... modify read_text
 
         if self.raw_data_path is not None:
@@ -48,7 +47,7 @@ class TFIDF: #(Primitive):
         else: #data frame contains raw text
 			#for col in self.columns:
             self.idf_ = self.bow.fit_transform(X[col].values)
-    	return self
+        return self
 
     def transform(self, X, y = None):
     	# just let X be new dataframe of single column
@@ -121,7 +120,7 @@ class CorexText(UnsupervisedLearnerPrimitiveBase[Input, Output, Params]):  #(Pri
             raise ValueError("Missing training data.")
 
         bow = self.bow.fit_transform(self.training_inputs.values.ravel())
-        factors = self.model.fit_transform(bow)
+        self.latent_factors = self.model.fit_transform(bow)
         self.fitted = True
 
 
@@ -130,30 +129,32 @@ class CorexText(UnsupervisedLearnerPrimitiveBase[Input, Output, Params]):  #(Pri
         #X_ = X[self.columns].values # useless if only desired columns are passed
         if not self.fitted:
             bow = self.bow.fit_transform(X.values.ravel())
-            factors = self.model.fit_transform(bow)
+            self.latent_factors = self.model.fit_transform(bow)
             self.fitted = True
         else:
             bow = self.bow.transform(X.values.ravel())
-            factors = self.model.transform(bow)
+            self.latent_factors = self.model.transform(bow)
 
-        return factors
+        return self.latent_factors
 
     def fit_transform(self, X : Sequence[Input], y : Sequence[Input] = None) -> Sequence[Output]: # TAKES IN DF with index column
         #self.columns = list(X)
         #X_ = X[self.columns].values # useless if only desired columns are passed
 
         bow = self.bow.fit_transform(X.values.ravel())
-        factors = self.model.fit_transform(bow)
+        self.latent_factors = self.model.fit_transform(bow)
         self.fitted = True
-        return factors
+        return self.latent_factors
 
     def set_training_data(self, X : Sequence[Input]) -> None:
         self.training_inputs = X
         self.fitted = False
 
     def get_params(self) -> Params:
-        return Params(latent_factors = self.model.labels)
+        return Params(latent_factors = self.latent_factors)
 
+    def set_params(self, params: Params) -> None:
+        self.latent_factors = params.latent_factors
 
     def annotation(self):
         if self._annotation is not None:

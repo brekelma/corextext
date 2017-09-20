@@ -1,13 +1,13 @@
 {
-  "id": "43e42d70-5989-3fa6-862d-44b8b7e88f4f",
+  "id": "483a8de3-801a-3bad-a665-2d8b5dca47f9",
   "name": "dsbox.corextext.corex_text.corextext",
   "common_name": "DSBox Corex Text",
   "description": "Learns latent factors / topics which explain the most multivariate information in bag of words representations of documents. Returns learned topic scores for each document. Also supports hierarchical models and 'anchoring' to encourage topics to concentrate around desired words.",
   "languages": [
-    "python2.7"
+    "python2.7", "python3.6"
   ],
   "library": "dsbox",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "source_code": "https://github.com/brekelma/corextext.git",
   "is_class": true,
   "attributes": [
@@ -122,15 +122,15 @@
     "package": "corextext"
   }],
   "compute_resources": {
-    "sample_size": [100, 100000],
+    "sample_size": [0.000912, 1.869],
     "sample_unit": ["MB", "MB"],
     "num_nodes": [1, 1],
     "cores_per_node": [4, 4],
     "gpus_per_node": [0, 0],
-    "mem_per_node": [1, 1000],
-    "disk_per_node": [1, 1000],
+    "mem_per_node": [1, 1],
+    "disk_per_node": [1, 1],
     "mem_per_gpu": [0, 0],
-    "expected_running_time": [1, 2]
+    "expected_running_time": [14, 52]
   },
   "interface_type": "dimensionality_reduction"
 }
