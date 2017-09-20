@@ -10,7 +10,6 @@ import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 import numpy as np
 
-sys.path.append('../')
 from primitive_interfaces.unsupervised_learning import UnsupervisedLearnerPrimitiveBase
 from typing import NamedTuple, Union, Optional, Sequence
 
@@ -98,56 +97,71 @@ class TFIDF: #(Primitive):
 
 class CorexText(UnsupervisedLearnerPrimitiveBase[Input, Output, Params]):  #(Primitive):
     
-    def __init__(self, n_hidden : int = 10, max_iter : int = 200, **kwargs) -> None:
+    def __init__(self, n_hidden : int = 10, iterations: int = 200, **kwargs) -> None:
         super().__init__()
 
         self.n_hidden = n_hidden #DEFAULT = 10 topics (no latent_pct equivalent)
-        
+        self.max_iter = iterations
         # no real need to pass extra Corex parameters.  kwargs used for TFIDF
-        self.model = Corex(n_hidden= self.n_hidden, max_iter = max_iter)#, **kwargs)
+        self.model = Corex(n_hidden= self.n_hidden, max_iter = self.max_iter)#, **kwargs)
 
         self.bow = TfidfVectorizer(decode_error='ignore', **kwargs)
         #if max_factors not None and n_hidden is None:
        #    self.n_hidden = int(max_factors/len(self.columns))
         #else:
          
-    def fit(self) -> None: #X : Sequence[Input]): 
+    def fit(self, timeout : float = None, iterations : int = None) -> None: #X : Sequence[Input]): 
         #self.columns = list(X)
         #X_ = X[self.columns].values # useless if only desired columns are passed
         if self.fitted:
             return
-        if not self.training_inputs:
+
+
+        if not hasattr(self, 'training_inputs'):
             raise ValueError("Missing training data.")
+
+        if iterations is not None:
+            self.max_iter = iterations
+            self.model.max_iter = self.max_iter
 
         bow = self.bow.fit_transform(self.training_inputs.values.ravel())
         self.latent_factors = self.model.fit_transform(bow)
         self.fitted = True
 
 
-    def produce(self, X : Sequence[Input], y : Sequence[Input] = None) -> Sequence[Output]: # TAKES IN DF with index column
+    def produce(self, inputs : Sequence[Input], timeout : float = None, iterations : int = None) -> Sequence[Output]: # TAKES IN DF with index column
         #self.columns = list(X)
         #X_ = X[self.columns].values # useless if only desired columns are passed
+        if iterations is not None:
+            self.max_iter = iterations
+            self.model.max_iter = self.max_iter
+
         if not self.fitted:
-            bow = self.bow.fit_transform(X.values.ravel())
+            bow = self.bow.fit_transform(inputs.values.ravel())
             self.latent_factors = self.model.fit_transform(bow)
             self.fitted = True
         else:
-            bow = self.bow.transform(X.values.ravel())
+            bow = self.bow.transform(inputs.values.ravel())
             self.latent_factors = self.model.transform(bow)
 
         return self.latent_factors
 
-    def fit_transform(self, X : Sequence[Input], y : Sequence[Input] = None) -> Sequence[Output]: # TAKES IN DF with index column
+    def fit_transform(self, inputs : Sequence[Input], timeout : float = None, iterations : int = None) -> Sequence[Output]: # TAKES IN DF with index column
         #self.columns = list(X)
         #X_ = X[self.columns].values # useless if only desired columns are passed
 
-        bow = self.bow.fit_transform(X.values.ravel())
+
+        if iterations is not None:
+            self.max_iter = iterations
+            self.model.max_iter = self.max_iter
+
+        bow = self.bow.fit_transform(inputs.values.ravel())
         self.latent_factors = self.model.fit_transform(bow)
         self.fitted = True
         return self.latent_factors
 
-    def set_training_data(self, X : Sequence[Input]) -> None:
-        self.training_inputs = X
+    def set_training_data(self, inputs : Sequence[Input]) -> None:
+        self.training_inputs = inputs
         self.fitted = False
 
     def get_params(self) -> Params:
