@@ -1,5 +1,5 @@
 {
-  "id": "483a8de3-801a-3bad-a665-2d8b5dca47f9",
+  "id": "56779ca0-e48d-3058-b34b-1b38e57e6205",
   "name": "dsbox.corextext.corex_text.CorexText",
   "common_name": "DSBox Corex Text",
   "description": "Learns latent factors / topics which explain the most multivariate information in bag of words representations of documents. Returns learned topic scores for each document. Also supports hierarchical models and 'anchoring' to encourage topics to concentrate around desired words.",
@@ -16,7 +16,7 @@
       "type": "array",
       "name": "latent_factors",
       "description": "Topic activations for each document."
-    }, 
+    } 
   ],
   "parameters": [
     {
