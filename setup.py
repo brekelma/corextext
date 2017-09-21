@@ -8,7 +8,7 @@ except IOError:
 
 setup(
     name="corextext",
-    version="0.1.7",
+    version="0.1.8",
     description="Return components/latent factors that explain the most multivariate mutual information in the data under Linear Gaussian model. For comparison, PCA returns components explaining the most variance in the data.",
     license="AGPL-3.0",
     author="Rob Brekelmans/Greg Ver Steeg",
