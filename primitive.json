@@ -1,13 +1,13 @@
 {
-  "id": "6332f6d1-9471-3c47-8094-f28d6a7e8dcd",
-  "name": "dsbox.corextext.corex_text.CorexText",
+  "id": "6661f19f-6888-3139-94b7-f0741d315a2b",
+  "name": "corextext.corex_text.CorexText",
   "common_name": "DSBox Corex Text",
   "description": "Learns latent factors / topics which explain the most multivariate information in bag of words representations of documents. Returns learned topic scores for each document. Also supports hierarchical models and 'anchoring' to encourage topics to concentrate around desired words.",
   "languages": [
     "python2.7", "python3.5"
   ],
-  "library": "dsbox",
-  "version": "0.1.6",
+  "library": "corextext",
+  "version": "0.1.8",
   "source_code": "https://github.com/brekelma/corextext.git",
   "is_class": true,
   "attributes": [
@@ -16,7 +16,22 @@
       "type": "array",
       "name": "latent_factors",
       "description": "Topic activations for each document."
-    } 
+    },
+    {
+      "type": "corextext.corextext.corex_topic.Corex",
+      "name": "model",
+      "description": "Corex topic model (see https://github.com/gregversteeg/corex_topic)."
+    },
+    {
+      "type": "sklearn.feature_extraction.text.TfidfVectorizer",
+      "name": "bow",
+      "description": "Fitted object transforming raw text to bag of words representation."
+    }, 
+    {
+      "type": "bool",
+      "name": "fitted",
+      "description": "Whether model has been fit."
+    }
   ],
   "parameters": [
     {
@@ -53,7 +68,7 @@
   "methods_available": [
     {
       "name": "fit",
-      "id": "dsbox.corextext.corex_text.CorexText.fit",
+      "id": "corextext.corex_text.CorexText.fit",
       "description": "'Fit the model according to the given training data.\n",
       "returns": {
         "type": "object",
@@ -62,17 +77,17 @@
         },
       "parameters": [
         {
-          "shape": "n_documents, n_terms",
+          "shape": "n_documents, ",
           "type": "array-like, sparse matrix",
           "name": "inputs",
-          "description": "Training vector, where n_documents is the number of documents and n_terms is the vocabulary size.  Matrix entries should be preprocessed to bag of word counts or tfidf score.",
+          "description": "Training vector of raw text.  Method automatically includes sklearn Tfidf preprocessing into bag of words.",
           "is_hyperparameter": false
         }
         ]
     },
     {
       "name": "produce",
-      "id": "dsbox.corextext.corex_text.CorexText.produce",
+      "id": "corextext.corex_text.CorexText.produce",
       "description": "'Transform data according to learned model.\n",
       "returns": {
         "type": "array-like",
@@ -89,6 +104,54 @@
           "is_hyperparameter": false
         }
         ]
+      },
+      {
+      "name": "set_training_data",
+      "id": "corextext.corex_text.CorexText.set_training_data",
+      "description": "Add training data.\n",
+      "returns": {
+        "type": "object",
+        "name": "self",
+        "description": "Returns self. '"
+        },
+      "parameters": [
+        {
+          "shape": "n_documents, ",
+          "type": "array-like, sparse matrix",
+          "name": "inputs",
+          "description": "Training vector of raw text.  Method automatically includes sklearn Tfidf preprocessing into bag of words.",
+          "is_hyperparameter": false
+        }
+        ]
+      },
+      {
+      "name": "set_params",
+      "id": "corextext.corex_text.CorexText.set_params",
+      "description": "Set latent factors.\n",
+      "returns": {
+        "type": "object",
+        "name": "self",
+        "description": "Returns self. '"
+        },
+      "parameters": [
+        {
+          "type": "NamedTuple",
+          "name": "params",
+          "description": "Params object with 'latent_factors' : np.ndarray = (n_documents, n_hidden) setting the latent representation.",
+          "is_hyperparameter": false
+        }
+        ]
+      },
+      {
+      "name": "get_params",
+      "id": "corextext.corex_text.CorexText.get_params",
+      "description": "Get latent factors.\n",
+      "returns": {
+        "type": "Params",
+        "name": "params",
+        "description": "Params NamedTuple with 'latent_factors' : np.ndarray = (n_documents, n_hidden) setting the latent representation."
+        },
+      "parameters": []
       }
     ],
   "algorithm_type": ["Dimensionality Reduction"],
@@ -104,7 +167,8 @@
   "handles_multilabel": false,
   "input_type": [
     "DENSE",
-    "SPARSE"
+    "SPARSE",
+    "TEXT"
   ],
   "output_type": [
     "FEATURES"

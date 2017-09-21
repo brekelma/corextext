@@ -97,13 +97,13 @@ class TFIDF: #(Primitive):
 
 class CorexText(UnsupervisedLearnerPrimitiveBase[Input, Output, Params]):  #(Primitive):
     
-    def __init__(self, n_hidden : int = 10, iterations: int = 200, **kwargs) -> None:
+    def __init__(self, n_hidden : int = 10, iterations: int = 200, count: str ='binarize', eps: float = 1e-5, seed : bool =None, verbose : bool =False,  **kwargs) -> None:
         super().__init__()
 
         self.n_hidden = n_hidden #DEFAULT = 10 topics (no latent_pct equivalent)
         self.max_iter = iterations
         # no real need to pass extra Corex parameters.  kwargs used for TFIDF
-        self.model = Corex(n_hidden= self.n_hidden, max_iter = self.max_iter)#, **kwargs)
+        self.model = Corex(n_hidden= self.n_hidden, max_iter = self.max_iter, eps = eps, seed = seed, verbose= verbose, count = count)#, **kwargs)
 
         self.bow = TfidfVectorizer(decode_error='ignore', **kwargs)
         #if max_factors not None and n_hidden is None:
