@@ -1,6 +1,7 @@
 from sklearn import preprocessing
 #import primitive
 import sys
+import os
 #sys.path.append('corex_topic/')
 from corextext.corextext.corex_topic import Corex
 #import corex_topic.corex_topic as corex_text
@@ -97,15 +98,26 @@ class TFIDF: #(Primitive):
 
 class CorexText(UnsupervisedLearnerPrimitiveBase[Input, Output, Params]):  #(Primitive):
     
-    def __init__(self, n_hidden : int = 10, iterations: int = 200, count: str ='binarize', eps: float = 1e-5, seed : bool =None, verbose : bool =False,  **kwargs) -> None:
+    def __init__(self, n_hidden : int = 10, iterations: int = 200, max_df: float = 0.9, min_df: float = 2, max_features: int = None, 
+        get_text : bool = False, data_path : str= None, count: str ='binarize', eps: float = 1e-5, seed : bool =None, verbose : bool =False,  **kwargs) -> None:
+
         super().__init__()
 
         self.n_hidden = n_hidden #DEFAULT = 10 topics (no latent_pct equivalent)
         self.max_iter = iterations
+        self.max_df = max_df
+        self.min_df = min_df #note: float = %, int = count of document frequencies
+        self.max_features = max_features
+        self.get_text = get_text
+        self.data_path = data_path
+
         # no real need to pass extra Corex parameters.  kwargs used for TFIDF
         self.model = Corex(n_hidden= self.n_hidden, max_iter = self.max_iter, eps = eps, seed = seed, verbose= verbose, count = count)#, **kwargs)
 
-        self.bow = TfidfVectorizer(decode_error='ignore', **kwargs)
+        if not self.get_text:
+            self.bow = TfidfVectorizer(input = 'content', decode_error='ignore', max_df = self.max_df, min_df = self.min_df, max_features = self.max_features, **kwargs)
+        else:
+            self.bow = TfidfVectorizer(input = 'filename', max_df = self.max_df, min_df = self.min_df, max_features = self.max_features, **kwargs)
         #if max_factors not None and n_hidden is None:
        #    self.n_hidden = int(max_factors/len(self.columns))
         #else:
@@ -116,7 +128,6 @@ class CorexText(UnsupervisedLearnerPrimitiveBase[Input, Output, Params]):  #(Pri
         if self.fitted:
             return
 
-
         if not hasattr(self, 'training_inputs'):
             raise ValueError("Missing training data.")
 
@@ -124,7 +135,7 @@ class CorexText(UnsupervisedLearnerPrimitiveBase[Input, Output, Params]):  #(Pri
             self.max_iter = iterations
             self.model.max_iter = self.max_iter
 
-        bow = self.bow.fit_transform(self.training_inputs.values.ravel())
+        bow = self.bow.fit_transform(self.training_inputs.values.ravel()) if not self.get_text else self.bow.fit_transform(self._get_raw_inputs())
         self.latent_factors = self.model.fit_transform(bow)
         self.fitted = True
 
@@ -137,11 +148,11 @@ class CorexText(UnsupervisedLearnerPrimitiveBase[Input, Output, Params]):  #(Pri
             self.model.max_iter = self.max_iter
 
         if not self.fitted:
-            bow = self.bow.fit_transform(inputs.values.ravel())
+            bow = self.bow.fit_transform(inputs.values.ravel()) if not self.get_text else self.bow.fit_transform(self._get_raw_inputs(inputs = inputs))
             self.latent_factors = self.model.fit_transform(bow)
             self.fitted = True
         else:
-            bow = self.bow.transform(inputs.values.ravel())
+            bow = self.bow.transform(inputs.values.ravel()) if not self.get_text else self.bow.transform(self._get_raw_inputs(inputs = inputs))
             self.latent_factors = self.model.transform(bow)
 
         return self.latent_factors
@@ -155,10 +166,22 @@ class CorexText(UnsupervisedLearnerPrimitiveBase[Input, Output, Params]):  #(Pri
             self.max_iter = iterations
             self.model.max_iter = self.max_iter
 
-        bow = self.bow.fit_transform(inputs.values.ravel())
+        bow = self.bow.fit_transform(inputs.values.ravel()) if not self.get_text else self.bow.fit_transform(self._get_raw_inputs(inputs = inputs))
         self.latent_factors = self.model.fit_transform(bow)
         self.fitted = True
         return self.latent_factors
+
+    def _get_raw_inputs(self, inputs : Sequence[Input] = None) -> np.ndarray:
+        raw_inputs = self.training_inputs.values if inputs is None else inputs.values
+        inp = self.training_inputs.values if inputs is None else inputs.values
+        if self.data_path is not None:
+            for idx, val in np.ndenumerate(inp):
+                raw_inputs[idx] = os.path.join(self.data_path, val)
+        else:
+            print('Warning: data_path not passed')
+        
+        return raw_inputs.ravel()
+    
 
     def set_training_data(self, inputs : Sequence[Input]) -> None:
         self.training_inputs = inputs
