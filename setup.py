@@ -8,7 +8,7 @@ except IOError:
 
 setup(
     name="corextext",
-    version="0.1.8",
+    version="0.1.10",
     description="Return components/latent factors that explain the most multivariate mutual information in the data under Linear Gaussian model. For comparison, PCA returns components explaining the most variance in the data.",
     license="AGPL-3.0",
     author="Rob Brekelmans/Greg Ver Steeg",
@@ -21,5 +21,10 @@ setup(
     classifiers=[
         "Programming Language :: Python",
         "Programming Language :: Python :: 3.5",
-    ]
+    ],    
+    entry_points = {
+    'd3m.primitives': [
+        'corex_text.CorexText = corextext.corex_text:CorexText',
+    ],
+    }
 )

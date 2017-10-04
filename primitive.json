@@ -1,13 +1,13 @@
 {
-  "id": "3d02dcda-00b6-3a90-a851-189658a2a3bf",
-  "name": "dsbox.corextext.corex_text.CorexText",
+  "id": "18e63b10-c5b7-34bc-a670-f2c831d6b4bf",
+  "name": "corextext.corex_text.CorexText",
   "common_name": "DSBox Corex Text",
   "description": "Learns latent factors / topics which explain the most multivariate information in bag of words representations of documents. Returns learned topic scores for each document. Also supports hierarchical models and 'anchoring' to encourage topics to concentrate around desired words.",
   "languages": [
     "python2.7", "python3.5", "python3.6"
   ],
-  "library": "dsbox.corextext",
-  "version": "0.1.9",
+  "library": "corextext",
+  "version": "0.1.10",
   "source_code": "https://github.com/brekelma/corextext.git",
   "is_class": true,
   "attributes": [
@@ -18,7 +18,7 @@
       "description": "Topic activations for each document."
     },
     {
-      "type": "dsbox.corextext.corextext.corex_topic.Corex",
+      "type": "corextext.corextext.corex_topic.Corex",
       "name": "model",
       "description": "Corex topic model (see https://github.com/gregversteeg/corex_topic)."
     },
@@ -116,7 +116,7 @@
   "methods_available": [
     {
       "name": "fit",
-      "id": "dsbox.corextext.corex_text.CorexText.fit",
+      "id": "corextext.corex_text.CorexText.fit",
       "description": "'Fit the model according to the given training data.\n",
       "returns": {
         "type": "object",
@@ -135,7 +135,7 @@
     },
     {
       "name": "produce",
-      "id": "dsbox.corextext.corex_text.CorexText.produce",
+      "id": "corextext.corex_text.CorexText.produce",
       "description": "'Transform data according to learned model.\n",
       "returns": {
         "type": "array-like",
@@ -155,7 +155,7 @@
       },
       {
       "name": "set_training_data",
-      "id": "dsbox.corextext.corex_text.CorexText.set_training_data",
+      "id": "corextext.corex_text.CorexText.set_training_data",
       "description": "Add training data.\n",
       "returns": {
         "type": "object",
@@ -174,7 +174,7 @@
       },
       {
       "name": "set_params",
-      "id": "dsbox.corextext.corex_text.CorexText.set_params",
+      "id": "corextext.corex_text.CorexText.set_params",
       "description": "Set latent factors.\n",
       "returns": {
         "type": "object",
@@ -192,7 +192,7 @@
       },
       {
       "name": "get_params",
-      "id": "dsbox.corextext.corex_text.CorexText.get_params",
+      "id": "corextext.corex_text.CorexText.get_params",
       "description": "Get latent factors.\n",
       "returns": {
         "type": "Params",

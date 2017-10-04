@@ -97,7 +97,28 @@ class TFIDF: #(Primitive):
 
 
 class CorexText(UnsupervisedLearnerPrimitiveBase[Input, Output, Params]):  #(Primitive):
-    
+    """
+    Learns latent factors / topics which explain the most multivariate information in bag of words representations of documents. Returns learned topic scores for each document. Also supports hierarchical models and 'anchoring' to encourage topics to concentrate around desired words.
+    """
+    __author__ = "Rob Brekelmans <brekelma@usc.edu>, Greg Ver Steeg"
+    __metadata__ = {
+        "team": "ISI DSBox",
+        "common_name": "CorexText",
+        "algorithm_type": ["DimensionalityReduction"],
+        "compute_resources": {
+            "sample_size": [0.000912, 1.869],
+            "sample_unit": ["MB", "MB"],
+            "disk_per_node": [1, 1],
+            "expected_running_time": [14, 52],
+            "gpus_per_node": [],
+            "cores_per_node": [1, 1],
+            "mem_per_gpu": [],
+            "mem_per_node": [],
+            "num_nodes": [],
+        }
+    }
+
+
     def __init__(self, n_hidden : int = 10, iterations: int = 200, max_df: float = 0.9, min_df: float = 2, max_features: int = None, 
         get_text : bool = False, data_path : str= None, count: str ='binarize', eps: float = 1e-5, seed : bool =None, verbose : bool =False,  **kwargs) -> None:
 
