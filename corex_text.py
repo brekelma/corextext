@@ -12,7 +12,7 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 import numpy as np
 import re
 
-import d3m.metadata.container as container
+import d3m.container as container
 import d3m.metadata.hyperparams as hyperparams
 import d3m.metadata.params as params
 from d3m.metadata.metadata import PrimitiveMetadata
