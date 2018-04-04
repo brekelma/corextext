@@ -270,7 +270,7 @@ class CorexText(UnsupervisedLearnerPrimitiveBase[Input, Output, CorexText_Params
                 #print(i, return_val.shape)
         return return_val
 
-    def set_training_data(self, *, inputs : Input) -> None:
+    def set_training_data(self, *, inputs : Input, outputs : Output = None) -> None:
         self.training_inputs = inputs
         self.fitted = False
 
