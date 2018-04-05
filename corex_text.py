@@ -25,8 +25,6 @@ from d3m.metadata.hyperparams import Uniform, UniformInt, Union, Enumeration
 from typing import NamedTuple, Optional, Sequence, Any
 import typing
 
-from .. import config
-
 Input = container.DataFrame
 Output = container.ndarray
 #Output = container.DataFrame
@@ -59,23 +57,19 @@ class CorexText(UnsupervisedLearnerPrimitiveBase[Input, Output, CorexText_Params
     metadata = PrimitiveMetadata({
           "schema": "v0",
           "id": "18e63b10-c5b7-34bc-a670-f2c831d6b4bf",
-          "version": config.VERSION,
+          "version": "1.0.0",
           "name": "CorexText",
           "description": "Learns latent factors / topics which explain the most multivariate information in bag of words representations of documents. Returns learned topic scores for each document. Also supports hierarchical models and 'anchoring' to encourage topics to concentrate around desired words.",
           "python_path": "d3m.primitives.dsbox.CorexText",
           "original_python_path": "corextext.corex_text.CorexText",
           "source": {
-            "name": config.D3M_PERFORMER_TEAM,
-            "contact": config.MAIL_TO,
-            "uris": [ config.REPOSITORY ]
+            "name": "ISI",
+            "contact": "mailto:brekelma@usc.edu",
+            "uris": [ "https://github.com/brekelma/dsbox_corex" ]
             },
           "installation": [
-            config.INSTALLATION 
-           # {
-           #   "type":"PIP",
-           #   "package":"corextext",
-           #  "version":"0.2.10"
-           # }
+                {'type': 'PIP', 
+                 'package_uri': 'git+https://github.com/brekelma/dsbox_corex@e1cf26dff2ba2957626181f26fe121491691d0fe#egg=dsbox_corex'}
             ],
           "algorithm_types": ["EXPECTATION_MAXIMIZATION_ALGORITHM", "LATENT_DIRICHLET_ALLOCATION"],
           "primitive_family": "FEATURE_CONSTRUCTION",
