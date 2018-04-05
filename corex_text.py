@@ -15,7 +15,7 @@ import re
 import d3m.container as container
 import d3m.metadata.hyperparams as hyperparams
 import d3m.metadata.params as params
-from d3m.metadata.metadata import PrimitiveMetadata
+from d3m.metadata.base import PrimitiveMetadata
 
 from d3m.primitive_interfaces.unsupervised_learning import UnsupervisedLearnerPrimitiveBase
 from d3m.primitive_interfaces.base import CallResult
