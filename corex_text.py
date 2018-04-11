@@ -15,7 +15,7 @@ import re
 import d3m.container as container
 import d3m.metadata.hyperparams as hyperparams
 import d3m.metadata.params as params
-from d3m.metadata.base import PrimitiveMetadata
+from d3m.metadata.base import PrimitiveMetadata, DockerContainer
 
 from d3m.primitive_interfaces.unsupervised_learning import UnsupervisedLearnerPrimitiveBase
 from d3m.primitive_interfaces.base import CallResult
@@ -79,7 +79,7 @@ class CorexText(UnsupervisedLearnerPrimitiveBase[Input, Output, CorexText_Params
     #      "effects": [],
 
 
-    def __init__(self, *, hyperparams : CorexText_Hyperparams, random_seed : int =  0, docker_containers: typing.Dict[str, str] = None) -> None:
+    def __init__(self, *, hyperparams : CorexText_Hyperparams, random_seed : int =  0, docker_containers: typing.Dict[str, DockerContainer] = None) -> None:
 
         super().__init__(hyperparams = hyperparams, random_seed = random_seed, docker_containers = docker_containers)
         
