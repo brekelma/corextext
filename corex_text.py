@@ -22,7 +22,7 @@ from d3m.primitive_interfaces.base import CallResult
 #from d3m.primitive_interfaces.params import Params
 from d3m.metadata.hyperparams import Uniform, UniformInt, Union, Enumeration
 
-from typing import NamedTuple, Optional, Sequence, Any
+from typing import NamedTuple, Optional, Sequence, Any, Tuple
 import typing
 
 Input = container.DataFrame
