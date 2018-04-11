@@ -79,9 +79,9 @@ class CorexText(UnsupervisedLearnerPrimitiveBase[Input, Output, CorexText_Params
     #      "effects": [],
 
 
-    def __init__(self, *, hyperparams : CorexText_Hyperparams, random_seed : int =  0, docker_containers: typing.Dict[str, DockerContainer] = None) -> None:
+    def __init__(self, *, hyperparams : CorexText_Hyperparams) -> None: #, random_seed : int =  0, docker_containers: typing.Dict[str, DockerContainer] = None)
 
-        super().__init__(hyperparams = hyperparams, random_seed = random_seed, docker_containers = docker_containers)
+        super().__init__(hyperparams = hyperparams)#, random_seed = random_seed, docker_containers = docker_containers)
         
          
     def fit(self, *, timeout : float = None, iterations : int = None) -> CallResult[None]: #X : Sequence[Input]): 
